@@ -1,0 +1,25 @@
+If requesting support, please provide the following details to help troubleshooting:
+
+Error message: 
+App published: Hello world
+
+Page Customers has to close.
+
+Internal session ID: 
+2b3ba05f-7dc4-4ccc-868b-ad5c8c7feb8d
+
+Application Insights session ID: 
+7f8c02bf-9e25-4e79-97e6-f1eced87c938
+
+Client activity id: 
+35401fe9-bbb9-1001-ee42-27eb61f9b7fa
+
+Time stamp on error: 
+2024-07-04T13:00:16.1654219Z
+
+User telemetry id: 
+b76420e5-42f0-4357-a187-1665c6c325d8
+
+AL call stack: 
+CustomerListExt(PageExtension 50100).OnOpenPage(Trigger) line 2 - ErrorInfoWrapper by Default Publisher
+
