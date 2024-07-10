@@ -1,5 +1,7 @@
-codeunit 50102 ErrorInfoWrapper
+codeunit 50101 ErrorInfoWrapper
 {
+#pragma warning disable AL0848
+    Access = Internal;
     InherentEntitlements = X;
     InherentPermissions = X;
 
@@ -20,267 +22,167 @@ codeunit 50102 ErrorInfoWrapper
     */
 
     var
-        ErrorInfoWrapperImpl: Codeunit "ErrorInfoWrapperImpl";
+        this: Codeunit ErrorInfoWrapper;
+        CustomErrorInfo: ErrorInfo;
 
-    /// <summary>
-    /// Creates a new ErrorInfo object with Collectible set to true.
-    /// Also initializes a new instance of the ErrorInfo variable.
-    /// </summary>
+    internal procedure SetCustomErrorInfo(ErrorInfoParam: ErrorInfo)
+    begin
+        CustomErrorInfo := ErrorInfoParam;
+    end;
+
     procedure Create(): Codeunit ErrorInfoWrapper
     begin
-        this.ErrorInfoWrapperImpl.Create();
+        CustomErrorInfo := ErrorInfo.Create();
+        this.SetCustomErrorInfo := CustomErrorInfo;
         exit(this);
     end;
 
-    /// <summary>
-    /// Creates a new ErrorInfo object with Collectible set to true.
-    /// Also initializes a new instance of the ErrorInfo variable.
-    /// </summary>
-    /// <param name="MessageParam">Specifies the message that will be sent to telemetry. For a 'Client' error type, the message will also be appear in the client.</param>
-    /// <returns></returns>
     procedure Create(MessageParam: Text): Codeunit ErrorInfoWrapper
     begin
-        this.ErrorInfoWrapperImpl.Create(MessageParam);
+        CustomErrorInfo := ErrorInfo.Create(MessageParam);
+        this.SetCustomErrorInfo := CustomErrorInfo;
         exit(this);
     end;
 
-    /// <summary>
-    /// Specifies the title of the error.
-    /// </summary>
-    /// <param name="TitleParam">The title will be shown at the top of the error message window. If not set, there won't be any title.</param>
-    /// <returns></returns>
     procedure Title(TitleParam: Text): Codeunit ErrorInfoWrapper
     begin
-        this.ErrorInfoWrapperImpl.Title(TitleParam);
+        CustomErrorInfo.Title := TitleParam;
+        this.SetCustomErrorInfo := CustomErrorInfo;
         exit(this);
     end;
 
-
-    /// <summary>
-    /// Specifies the message of the error.
-    /// </summary>
-    /// <param name="MessageParam">Specifies the message that will be sent to telemetry. For a 'Client' error type, the message will also be appear in the client.</param>
-    /// <returns></returns>
     procedure Message(MessageParam: Text): Codeunit ErrorInfoWrapper
     begin
-        this.ErrorInfoWrapperImpl.Message(MessageParam);
+        CustomErrorInfo.Message := MessageParam;
+        this.SetCustomErrorInfo := CustomErrorInfo;
         exit(this);
     end;
 
-    /// <summary>
-    /// Specifies the detailed message of the error.
-    /// </summary>
-    /// <param name="DetailedMessageParam">The detailed message will not be shown to the client, it will just be part of the details copied with "Share details".</param>
-    /// <returns></returns>
     procedure DetailedMessage(DetailedMessageParam: Text): Codeunit ErrorInfoWrapper
     begin
-        this.ErrorInfoWrapperImpl.DetailedMessage(DetailedMessageParam);
+        CustomErrorInfo.DetailedMessage := DetailedMessageParam;
+        this.SetCustomErrorInfo := CustomErrorInfo;
         exit(this);
     end;
 
-    /// <summary>
-    /// Add custom dimension to the error. Custom dimensions will be sent to telemetry and will be shown in the details copied with "Share details".
-    /// They are also useful in combination with AddAction to provide additional context to the action.
-    /// Call this function as often as needed to add multiple custom dimensions.
-    /// </summary>
-    /// <param name="CustomDimensionKey">The key of the dimension to add</param>
-    /// <param name="CustomDimensionValue">The value of the dimension to add</param>
-    /// <returns></returns>
     procedure AddCustomDimension(CustomDimensionKey: Text; CustomDimensionValue: Text): Codeunit ErrorInfoWrapper
     begin
-        this.ErrorInfoWrapperImpl.AddCustomDimension(CustomDimensionKey, CustomDimensionValue);
+        CustomErrorInfo.CustomDimensions.Add(CustomDimensionKey, CustomDimensionValue);
+        this.SetCustomErrorInfo := CustomErrorInfo;
         exit(this);
     end;
 
-    /// <summary>
-    /// Specifies the control name that the error relates to.
-    /// </summary>
-    /// <param name="Name">Name of the control</param>
-    /// <returns></returns>
     procedure ControlName(Name: Text): Codeunit ErrorInfoWrapper
     begin
-        this.ErrorInfoWrapperImpl.ControlName(Name);
+        CustomErrorInfo.ControlName := Name;
+        this.SetCustomErrorInfo := CustomErrorInfo;
         exit(this);
     end;
 
-    /// <summary>
-    /// Specifies the classification of the error. Values include 'CustomerContent', 'EndUserIdentifiableInformation', 'EndUserPseudonymousIdentifiers', 'AccountData', 'OrganizationIdentifiableInformation', 'SystemMetadata', and 'ToBeClassified'
-    /// This affects how the error message will be shown in telemetry.
-    /// </summary>
-    /// <param name="Classification"></param>
-    /// <returns></returns>
     procedure DataClassification(Classification: DataClassification): Codeunit ErrorInfoWrapper
     begin
-        this.ErrorInfoWrapperImpl.DataClassification(Classification);
+        CustomErrorInfo.DataClassification := Classification;
+        this.SetCustomErrorInfo := CustomErrorInfo;
         exit(this);
     end;
 
-    /// <summary>
-    /// Adds a navigation action for the error. A navigation action can help the user to navigate to a specific page in order to fix the error.
-    /// </summary>
-    /// <param name="ActionCaption">Caption of the action button on the error message.</param>
-    /// <param name="PageNoParam">Page number that will be opened by the action.</param>
-    /// <returns></returns>
     procedure AddNavigationAction(ActionCaption: Text; PageNoParam: Integer): Codeunit ErrorInfoWrapper
     begin
-        this.ErrorInfoWrapperImpl.AddNavigationAction(ActionCaption, PageNoParam);
+        CustomErrorInfo.AddNavigationAction(ActionCaption);
+        CustomErrorInfo.PageNo := PageNoParam;
+        this.SetCustomErrorInfo := CustomErrorInfo;
         exit(this);
     end;
 
-    /// <summary>
-    /// Adds a navigation action for the error. A navigation action can help the user to navigate to a specific page in order to fix the error.
-    /// </summary>
-    /// <param name="ActionCaption">Caption of the action button on the error message.</param>
-    /// <param name="PageNoParam">Page number that will be opened by the action.</param>
-    /// <param name="RecordIdParam">RecordId of the record that should be opened by the page.</param>
-    /// <returns></returns>
     procedure AddNavigationAction(ActionCaption: Text; PageNoParam: Integer; RecordIdParam: RecordId): Codeunit ErrorInfoWrapper
     begin
-        this.ErrorInfoWrapperImpl.AddNavigationAction(ActionCaption, PageNoParam, RecordIdParam);
+        this.AddNavigationAction(ActionCaption, PageNoParam);
+        CustomErrorInfo.RecordId := RecordIdParam;
+        this.SetCustomErrorInfo := CustomErrorInfo;
         exit(this);
     end;
 
-    /// <summary>
-    /// Adds a navigation action for the error. A navigation action can help the user to navigate to a specific page in order to fix the error.
-    /// </summary>
-    /// <param name="ActionCaption">Caption of the action button on the error message.</param>
-    /// <param name="PageNoParam">Page number that will be opened by the action.</param>
-    /// <param name="TableIdParam">Table number of the record that should be opened by the page.</param>
-    /// <param name="SystemIdParam">System if of the record that should be opened by the page.</param>
-    /// <returns></returns>
     procedure AddNavigationAction(ActionCaption: Text; PageNoParam: Integer; TableIdParam: Integer; SystemIdParam: Guid): Codeunit ErrorInfoWrapper
     begin
-        this.ErrorInfoWrapperImpl.AddNavigationAction(ActionCaption, PageNoParam, TableIdParam, SystemIdParam);
+        this.AddNavigationAction(ActionCaption, PageNoParam);
+        CustomErrorInfo.TableId := TableIdParam;
+        CustomErrorInfo.SystemId := SystemIdParam;
+        this.SetCustomErrorInfo := CustomErrorInfo;
         exit(this);
     end;
 
-    /// <summary>
-    /// Specifies the page number that the error relates to.
-    /// This will be used by the navigation action to open the correct page.
-    /// </summary>
-    /// <param name="PageNoParam">Page number that will be opened by the action.</param>
-    /// <returns></returns>
     procedure PageNo(PageNoParam: Integer): Codeunit ErrorInfoWrapper
     begin
-        this.ErrorInfoWrapperImpl.PageNo(PageNoParam);
+        CustomErrorInfo.PageNo := PageNoParam;
+        this.SetCustomErrorInfo := CustomErrorInfo;
         exit(this);
     end;
 
-    /// <summary>
-    /// Specifies the record id that the error relates to.
-    /// This will be used by the navigation action to open the correct record.
-    /// </summary>
-    /// <param name="RecordIdParam">RecordId of the record that should be opened by the page.</param>
-    /// <returns></returns>
     procedure RecordId(RecordIdParam: RecordId): Codeunit ErrorInfoWrapper
     begin
-        this.ErrorInfoWrapperImpl.RecordId(RecordIdParam);
+        CustomErrorInfo.RecordId := RecordIdParam;
+        this.SetCustomErrorInfo := CustomErrorInfo;
         exit(this);
     end;
 
-    /// <summary>
-    /// Specifies the field number that the error relates to.
-    /// This will be used by the navigation action to point the user the correct field on the target page.
-    /// </summary>
-    /// <param name="FieldNoParam">Field number that will be focused by the action.</param>
-    /// <returns></returns>
     procedure FieldNo(FieldNoParam: Integer): Codeunit ErrorInfoWrapper
     begin
-        this.ErrorInfoWrapperImpl.FieldNo(FieldNoParam);
+        CustomErrorInfo.FieldNo := FieldNoParam;
+        this.SetCustomErrorInfo := CustomErrorInfo;
         exit(this);
     end;
 
-    /// <summary>
-    /// Specifies the table number that the error relates to.
-    /// This will be used by the navigation action to open the correct record.
-    /// </summary>
-    /// <param name="TableIdParam">Table number of the record that should be opened by the page.</param>
-    /// <returns></returns>
     procedure TableId(TableIdParam: Integer): Codeunit ErrorInfoWrapper
     begin
-        this.ErrorInfoWrapperImpl.TableId(TableIdParam);
+        CustomErrorInfo.TableId := TableIdParam;
+        this.SetCustomErrorInfo := CustomErrorInfo;
         exit(this);
     end;
 
-    /// <summary>
-    /// Specifies the system id that the error relates to.
-    /// This will be used by the navigation action to open the correct record.
-    /// </summary>
-    /// <param name="SystemIdParam">System id of the record that should be opened by the page.</param>
-    /// <returns></returns>
     procedure SystemId(SystemIdParam: Guid): Codeunit ErrorInfoWrapper
     begin
-        this.ErrorInfoWrapperImpl.SystemId(SystemIdParam);
+        CustomErrorInfo.SystemId := SystemIdParam;
+        this.SetCustomErrorInfo := CustomErrorInfo;
         exit(this);
     end;
 
-    /// <summary>
-    /// Adds an action to the error. An action can help to fix the error for the user.
-    /// </summary>
-    /// <param name="ActionCaption">Caption of the action button on the error message.</param>
-    /// <param name="CodeunitId">Id of the codeunit that contains the method that should be executed by the action.</param>
-    /// <param name="MethodName">Name of the method that should be executed by the action.</param>
-    /// <returns></returns>
     procedure AddAction(ActionCaption: Text; CodeunitId: Integer; MethodName: Text): Codeunit ErrorInfoWrapper
     begin
-        this.ErrorInfoWrapperImpl.AddAction(ActionCaption, CodeunitId, MethodName);
+        CustomErrorInfo.AddAction(ActionCaption, CodeunitId, MethodName);
+        this.SetCustomErrorInfo := CustomErrorInfo;
         exit(this);
     end;
 
-    /// <summary>
-    /// Adds an action to the error. An action can help to fix the error for the user.
-    /// </summary>
-    /// <param name="ActionCaption">Caption of the action button on the error message.</param>
-    /// <param name="CodeunitId">Id of the codeunit that contains the method that should be executed by the action.</param>
-    /// <param name="MethodName">Name of the method that should be executed by the action.</param>
-    /// <param name="Description">Tooltip text that will be shown when the user hovers over the action button.</param>
-    /// <returns></returns>
     procedure AddAction(ActionCaption: Text; CodeunitId: Integer; MethodName: Text; Description: Text): Codeunit ErrorInfoWrapper
     begin
-        this.ErrorInfoWrapperImpl.AddAction(ActionCaption, CodeunitId, MethodName, Description);
+        CustomErrorInfo.AddAction(ActionCaption, CodeunitId, MethodName, Description);
+        this.SetCustomErrorInfo := CustomErrorInfo;
         exit(this);
     end;
 
-    /// <summary>
-    /// Specifies if the error is collectible using ErrorBehavior.Collect.
-    /// </summary>
-    /// <param name="CollectibleParam">True if the error should be collectible, false otherwise.</param>
-    /// <returns></returns>
     procedure Collectible(CollectibleParam: Boolean): Codeunit ErrorInfoWrapper
     begin
-        this.ErrorInfoWrapperImpl.Collectible(CollectibleParam);
+        CustomErrorInfo.Collectible := CollectibleParam;
+        this.SetCustomErrorInfo := CustomErrorInfo;
         exit(this);
     end;
 
-    /// <summary>
-    /// Specifies type of the error. 'Client' shows the specified message in the client and sends it to telemetry. 'Internal' shows a generic message in the client and sends the specified message to telemetry.
-    /// </summary>
-    /// <param name="ErrorTypeParam">Type of the error</param>
-    /// <returns></returns>
     procedure ErrorType(ErrorTypeParam: ErrorType): Codeunit ErrorInfoWrapper
     begin
-        this.ErrorInfoWrapperImpl.ErrorType(ErrorTypeParam);
+        CustomErrorInfo.ErrorType := ErrorTypeParam;
+        this.SetCustomErrorInfo := CustomErrorInfo;
         exit(this);
     end;
 
-    /// <summary>
-    /// Specifies the severity level of the error. This can determine whether the error should be sent to telemetry (which is based on the trace level setting of the server).
-    /// </summary>
-    /// <param name="VerbosityParam">Verbosity level of the error</param>
-    /// <returns></returns>
     procedure Verbosity(VerbosityParam: Verbosity): Codeunit ErrorInfoWrapper
     begin
-        this.ErrorInfoWrapperImpl.Verbosity(VerbosityParam);
+        CustomErrorInfo.Verbosity := VerbosityParam;
+        this.SetCustomErrorInfo := CustomErrorInfo;
         exit(this);
     end;
 
-    /// <summary>
-    /// Returns the ErrorInfo object that was built by the ErrorInfoWrapper.
-    /// Use this function to pass the ErrorInfo object to the Error function.
-    /// </summary>
-    /// <returns></returns>
     procedure GetErrorInfo(): ErrorInfo
     begin
-        exit(this.ErrorInfoWrapperImpl.GetErrorInfo());
+        exit(CustomErrorInfo);
     end;
 }

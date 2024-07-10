@@ -21,7 +21,7 @@ pageextension 50100 CustomerListExt extends "Customer List"
         Error(
             ErrorInfoWrapper
                 .Title('My custom error title, from second app')
-                .Message('My custom error message')
+                .Message('This is the error wrapper with v24 implementation')
                 .DetailedMessage('My custom detailed error message')
                 .ControlName('MyControlName')
                 .DataClassification(DataClassification::OrganizationIdentifiableInformation)
