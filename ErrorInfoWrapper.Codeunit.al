@@ -23,7 +23,7 @@ codeunit 50102 ErrorInfoWrapper
         ErrorInfoWrapperImpl: Codeunit "ErrorInfoWrapperImpl";
 
     /// <summary>
-    /// Creates a new ErrorInfo object with Collectible set to true.
+    /// Creates a new ErrorInfo object.
     /// Also initializes a new instance of the ErrorInfo variable.
     /// </summary>
     procedure Create(): Codeunit ErrorInfoWrapper
@@ -33,7 +33,7 @@ codeunit 50102 ErrorInfoWrapper
     end;
 
     /// <summary>
-    /// Creates a new ErrorInfo object with Collectible set to true.
+    /// Creates a new ErrorInfo object.
     /// Also initializes a new instance of the ErrorInfo variable.
     /// </summary>
     /// <param name="MessageParam">Specifies the message that will be sent to telemetry. For a 'Client' error type, the message will also be appear in the client.</param>
